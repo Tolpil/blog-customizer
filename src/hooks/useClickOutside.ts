@@ -1,30 +1,17 @@
-import { useEffect, RefObject } from 'react';
+import { useLayoutEffect } from 'react';
 
-type UseClickOutsideProps = {
-	isOpen: boolean;
-	onChange: (newValue: boolean) => void;
-	rootRef: RefObject<HTMLElement>;
-};
-
-export const useClickOutside = ({
-	isOpen,
-	onChange,
-	rootRef,
-}: UseClickOutsideProps) => {
-	useEffect(() => {
-		const handleClick = (event: MouseEvent) => {
-			const { target } = event;
-			if (target instanceof Node && !rootRef.current?.contains(target)) {
-				onChange(false);
+export const useClickOutside = (
+	ref: React.RefObject<HTMLElement>,
+	callback: () => void
+) => {
+	useLayoutEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (ref.current && !ref.current.contains(event.target as Node)) {
+				callback();
 			}
 		};
 
-		if (isOpen) {
-			document.addEventListener('mousedown', handleClick);
-		}
-
-		return () => {
-			document.removeEventListener('mousedown', handleClick);
-		};
-	}, [isOpen, onChange, rootRef]);
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [ref, callback]);
 };

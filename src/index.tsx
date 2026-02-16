@@ -4,11 +4,8 @@ import clsx from 'clsx';
 
 import { Article } from './components/article/Article';
 import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
-import {
-	defaultArticleState,
-	type ArticleStateType,
-} from './constants/articleProps';
-
+import { defaultArticleState } from './constants/articleProps';
+import { ArticleState } from 'src/components/article-params-form/types';
 import './styles/index.scss';
 import styles from './styles/index.module.scss';
 
@@ -17,8 +14,9 @@ const root = createRoot(domNode);
 
 const App = () => {
 	const [articleState, setArticleState] =
-		useState<ArticleStateType>(defaultArticleState);
-
+		useState<ArticleState>(defaultArticleState);
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 	return (
 		<main
 			className={clsx(styles.main)}
@@ -32,8 +30,15 @@ const App = () => {
 				} as CSSProperties
 			}>
 			<ArticleParamsForm
-				articleState={articleState}
-				updateArticleState={setArticleState}
+				isOpen={isSidebarOpen}
+				onToggle={toggleSidebar}
+				currentState={articleState}
+				onApply={(newState: ArticleState) => {
+					setArticleState(newState);
+				}}
+				onReset={() => {
+					setArticleState(defaultArticleState);
+				}}
 			/>
 			<Article />
 		</main>
