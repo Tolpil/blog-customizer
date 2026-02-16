@@ -13,6 +13,7 @@ import {
 	defaultArticleState,
 	type ArticleStateType,
 } from 'src/constants/articleProps';
+import { useClickOutside } from 'src/hooks/useClickOutside';
 import type { ArticleParamsFormProps } from './types';
 
 import styles from './ArticleParamsForm.module.scss';
@@ -25,12 +26,18 @@ export const ArticleParamsForm = ({
 	const [formState, setFormState] = useState<ArticleStateType>(articleState);
 	const formRef = useRef<HTMLDivElement>(null);
 
+	useClickOutside({
+		isOpen,
+		onChange: setIsOpen,
+		rootRef: formRef,
+	});
+
 	useLayoutEffect(() => {
 		if (isOpen) {
-			// Фокус на форму при открытии для улучшения доступности
-			formRef.current?.focus();
+			// Синхронизация состояния формы с состоянием статьи при открытии
+			setFormState(articleState);
 		}
-	}, [isOpen]);
+	}, [isOpen, articleState]);
 
 	const handleFieldChange = (field: keyof ArticleStateType, value: any) => {
 		setFormState((prevState) => ({
@@ -49,25 +56,6 @@ export const ArticleParamsForm = ({
 		updateArticleState(formState);
 		setIsOpen(false);
 	};
-
-	const handleClickOutside = (e: MouseEvent) => {
-		if (
-			formRef.current &&
-			!formRef.current.contains(e.target as Node) &&
-			isOpen
-		) {
-			setIsOpen(false);
-		}
-	};
-
-	useLayoutEffect(() => {
-		if (isOpen) {
-			document.addEventListener('click', handleClickOutside);
-		}
-		return () => {
-			document.removeEventListener('click', handleClickOutside);
-		};
-	}, [isOpen]);
 
 	return (
 		<>
