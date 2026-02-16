@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import clsx from 'clsx';
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 import { RadioGroup } from 'src/ui/radio-group';
@@ -15,7 +16,7 @@ import type { OptionType } from 'src/constants/articleProps';
 import { Separator } from 'src/ui/separator';
 import { Text } from 'src/ui/text';
 import styles from './ArticleParamsForm.module.scss';
-import { useClickOutside } from 'src/hooks/useClickOutside';
+import { useCloseOnOutsideClickOrEsc } from 'src/hooks/useCloseOnOutsideClickOrEsc';
 import { ArticleState } from 'src/components/article-params-form/types';
 
 interface ArticleParamsFormProps {
@@ -45,10 +46,10 @@ export const ArticleParamsForm: React.FC<ArticleParamsFormProps> = ({
 	}, [isOpen, currentState]);
 
 	// Клик вне формы
-	useClickOutside(formRef, () => {
-		if (isOpen) {
-			onToggle();
-		}
+	useCloseOnOutsideClickOrEsc({
+		isOpenElement: isOpen,
+		elementRef: formRef,
+		onClose: onToggle,
 	});
 
 	const toggleForm = () => {
@@ -83,7 +84,7 @@ export const ArticleParamsForm: React.FC<ArticleParamsFormProps> = ({
 			{isOpen && (
 				<aside
 					ref={formRef}
-					className={`${styles.container} ${styles.container_open}`}>
+					className={clsx(styles.container, styles.container_open)}>
 					<form className={styles.form} onSubmit={handleSubmit}>
 						<div className={styles.header}>
 							<Text size={31} weight={800} uppercase>
