@@ -1,6 +1,9 @@
-import type { ArticleStateType } from 'src/constants/articleProps';
+import { OptionType } from 'src/constants/articleProps';
 
-export type ArticleParamsFormProps = {
-	articleState: ArticleStateType;
-	updateArticleState: (newState: ArticleStateType) => void;
+export type ArticleState = {
+	fontFamilyOption: OptionType;
+	fontSizeOption: OptionType;
+	fontColor: OptionType;
+	backgroundColor: OptionType;
+	contentWidth: OptionType;
 };
