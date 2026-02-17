@@ -5,11 +5,15 @@
 	height: 100%;
 	overflow: auto;
 	transform: translate(-616px);
-	transition: transform 0.5s ease;
+	transition: transform 0.8s ease;
 }
 
 .container_open {
 	transform: translate(0);
+}
+
+.container_closing {
+	transform: translate(-616px);
 }
 
 .form {

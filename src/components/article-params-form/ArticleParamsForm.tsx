@@ -37,6 +37,7 @@ export const ArticleParamsForm: React.FC<ArticleParamsFormProps> = ({
 	const formRef = useRef<HTMLDivElement>(null);
 
 	const [formState, setFormState] = useState<ArticleState>(currentState);
+	const [isClosing, setIsClosing] = useState(false);
 
 	// Синхронизируем formState с currentState при открытии формы
 	useEffect(() => {
@@ -53,7 +54,15 @@ export const ArticleParamsForm: React.FC<ArticleParamsFormProps> = ({
 	});
 
 	const toggleForm = () => {
-		onToggle();
+		if (isOpen) {
+			setIsClosing(true);
+			setTimeout(() => {
+				onToggle();
+				setIsClosing(false);
+			}, 800);
+		} else {
+			onToggle();
+		}
 	};
 
 	const handleFieldChange =
@@ -81,10 +90,13 @@ export const ArticleParamsForm: React.FC<ArticleParamsFormProps> = ({
 	return (
 		<>
 			<ArrowButton isOpen={isOpen} onClick={toggleForm} />
-			{isOpen && (
+			{(isOpen || isClosing) && (
 				<aside
 					ref={formRef}
-					className={clsx(styles.container, styles.container_open)}>
+					className={clsx(styles.container, {
+						[styles.container_open]: isOpen && !isClosing,
+						[styles.container_closing]: isClosing,
+					})}>
 					<form className={styles.form} onSubmit={handleSubmit}>
 						<div className={styles.header}>
 							<Text size={31} weight={800} uppercase>
